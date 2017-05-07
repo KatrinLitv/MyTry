@@ -1,0 +1,187 @@
+import java.math.BigInteger;
+import java.util.Arrays;
+
+public class MyMain {
+
+	public static void main(String[] args) {
+		int[] arr = { 10, 5, 3, 4, 6, 7, 1, 2, 34, 56, 21, 89, 33 };
+		int[] tmpArr = new int[arr.length];
+		bubleSortPrint(arr);
+		selectionSortPrint(arr);
+		insertionSortPrint(arr);
+		mergeSortPrint(tmpArr, arr);
+		quickSort(arr);
+	}
+
+	/**
+	 * 1) Choose an element, called pivot, from the list. 
+	 * Generally pivot can be the middle index element.
+	 * 2) Reorder the list so that all elements with values less than the pivot come before the pivot, 
+	 * while all elements with values greater than the pivot come after it (equal values can go either way). 
+	 * After this partitioning, the pivot is in its final position. 
+	 * This is called the partition operation.
+	 * 3) Recursively apply the above steps to the sub-list of elements with smaller values and separately the sub-list of elements with greater values. 	 * @param arr
+	 */
+	private static void quickSort(int[] arr) {
+		qsort(arr,0,arr.length-1);		
+		System.out.println(Arrays.toString(arr));
+	}
+
+	private static void qsort(int[] arr, int startIndex, int endIndex) {
+		int middle = qpart(arr,startIndex,endIndex);
+		if (startIndex < middle) qsort(arr, startIndex, middle-1);
+		if (endIndex > middle) qsort(arr, middle+1, endIndex);
+		
+	}
+
+	private static int qpart(int[] arr, int startIndex, int endIndex) {
+		int middle = startIndex + (endIndex-startIndex)/2;
+		int pivot = arr[middle];
+		
+		while (startIndex <= endIndex) {
+            /**
+             * In each iteration, we will identify a number from left side which
+             * is greater then the pivot value, and also we will identify a number
+             * from right side which is less then the pivot value. Once the search
+             * is done, then we exchange both numbers.
+             */
+            while (arr[startIndex] < pivot) {
+            	startIndex++;
+            }
+            while (arr[endIndex] > pivot) {
+            	endIndex--;
+            }
+            if (startIndex <= endIndex) {
+            	int tmp = arr[startIndex];
+            	arr[startIndex] = arr[endIndex];
+            	arr[endIndex] = tmp;
+                //move index to next position on both sides
+                startIndex++;
+                endIndex--;
+            }
+        }
+		return middle;
+	}
+
+	/**
+	 * Divide the unsorted array into n partitions, each partition contains 1
+	 * element. Here the one element is considered as sorted. Repeatedly merge
+	 * partitioned units to produce new sublists until there is only 1 sublist
+	 * remaining. This will be the sorted list at the end.
+	 * 
+	 * @param arr
+	 */
+	private static void mergeSortPrint(int[] tmpArr, int[] arr) {
+		doMergeSort(0, arr.length - 1, tmpArr, arr);
+		System.out.println(Arrays.toString(arr));
+	}
+
+	private static void doMergeSort(int startIndex, int endIndex, int[] tmpArr, int[] arr) {
+		if (startIndex < endIndex) {
+			int middle = startIndex + (endIndex - startIndex) / 2;
+			doMergeSort(startIndex, middle, tmpArr, arr);// right
+			doMergeSort(middle + 1, endIndex, tmpArr, arr);// left
+			mergeParts(startIndex, middle, endIndex, tmpArr, arr);
+		}
+	}
+
+	private static void mergeParts(int startIndex, int middle, int endIndex, int[] tmpArr, int[] arr) {
+		// Index Position in first array - starting with first element
+		int iFirst = startIndex;
+
+		// Index Position in second array - starting with first element
+		int iSecond = middle + 1;
+
+		// Index Position in merged array - starting with first position
+		int iMerged = startIndex;
+
+		// copy in tmp array
+		for (int i = startIndex; i <= endIndex; i++) {
+			tmpArr[i] = arr[i];
+		}
+
+		while (iFirst <= middle && iSecond <= endIndex) {
+			if (tmpArr[iFirst] <= tmpArr[iSecond]) {
+				arr[iMerged] = tmpArr[iFirst];
+				iFirst++;
+			} else {
+				arr[iMerged] = tmpArr[iSecond];
+				iSecond++;
+			}
+			iMerged++;
+		}
+
+	}
+
+	/**
+	 * The insertion sort maintains the two sub-arrays within the same array. At
+	 * the beginning of the sort, the first element of the first sub-array is
+	 * considered the "sorted array". With each pass through the loop, the next
+	 * element in the unsorted second sub-array is placed into its proper
+	 * position in the first sorted sub-array.
+	 * 
+	 * @param arr
+	 */
+	private static void insertionSortPrint(int[] arr) {
+		int n = arr.length;
+		for (int j = 1; j < n; j++) {
+			int key = arr[j];
+			int i;
+			for (i = j - 1; (i >= 0) && (arr[i] > key); i--) { // Bigger values
+																// are moving up
+				arr[i + 1] = arr[i];
+			}
+			arr[i + 1] = key;
+		}
+		System.out.println(Arrays.toString(arr));
+	}
+
+	/**
+	 * In selection sort algorithm, we search for the lowest element and arrange
+	 * it to the proper location. We swap the current element with the next
+	 * lowest number.
+	 * 
+	 * @param arr
+	 */
+
+	private static void selectionSortPrint(int[] arr) {
+		int tmp = 0;
+		int n = arr.length;
+		for (int i = 0; i < n; i++) {
+			int index = i;
+			for (int j = i + 1; j < n; j++) {
+				if (arr[j] < arr[index])
+					index = j;
+			}
+			// swap
+			tmp = arr[i];
+			arr[i] = arr[index];
+			arr[index] = tmp;
+		}
+		System.out.println(Arrays.toString(arr));
+	}
+
+	/**
+	 * In bubble sort algorithm, array is traversed from first element to last
+	 * element. Here, current element is compared with the next element. If
+	 * current element is greater than the next element, it is swapped.
+	 * 
+	 * @param arr
+	 */
+	private static void bubleSortPrint(int[] arr) {
+		int tmp = 0;
+		int n = arr.length;
+		for (int i = 0; i < n; i++) {
+			for (int j = 1; j < (n - i); j++) {
+				// swap
+				if (arr[j] < arr[j - 1]) {
+					tmp = arr[j];
+					arr[j] = arr[j - 1];
+					arr[j - 1] = tmp;
+				}
+			}
+		}
+		System.out.println(Arrays.toString(arr));
+	}
+
+}
